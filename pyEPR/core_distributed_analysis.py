@@ -30,6 +30,7 @@ import pandas as pd
 
 from . import Dict, config, logger
 from .ansys import CalcObject, ConstantVecCalcObject, set_property, ureg
+
 from .calcs.constants import epsilon_0
 from .project_info import ProjectInfo
 from .reports import (plot_convergence_f_vspass, plot_convergence_max_df,
@@ -668,6 +669,30 @@ class DistributedAnalysis(object):
         I = exp.evaluate(phase=90)
         self.design.Clear_Field_Clac_Stack()
         return I
+    
+    
+    def calc_Epll_avg_line(self, variation, integration_line,
+                           direction_line='CNT'):
+        '''
+        Function to calculate E parallel to 'direction_line'
+        and integrate along 'integration_line'
+
+        Args:
+            line (str) : integration line between plates - name
+        '''
+        lv = self._get_lv(variation)
+        l_int, _ = self.get_junc_len_dir(variation, integration_line)
+        _, u_dir = self.get_junc_len_dir(variation, direction_line)
+
+        u_dir = ConstantVecCalcObject(u_dir, self.setup)
+        calc = CalcObject([], self.setup)
+        #calc = calc.getQty("Jsurf").mag().integrate_surf(name = junc_rect)
+        calc = (((calc.getQty("E")).dot(u_dir)).real()
+                ).integrate_line(name=integration_line)
+        Epll = calc.evaluate(phase=0, lv=lv) / l_int
+        # self.design.Clear_Field_Clac_Stack()
+        return Epll
+    
 
     def calc_avg_current_J_surf_mag(self, variation: str, junc_rect: str, junc_line):
         ''' Peak current I_max for mdoe J in junction J

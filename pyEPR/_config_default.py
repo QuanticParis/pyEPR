@@ -21,7 +21,7 @@ __config_defined__ = 'config' in locals()
 config = Dict( # pylint: disable=invalid-name
 
     # Folder to save result data to.
-    root_dir=r'C:\data-pyEPR',
+    root_dir=r'C:\Users\Zaki\Documents\Travail\Projects\cav_cnt_coupling\data-pyEPR',
     save_format=r'%Y-%m-%d %H-%M-%S',
 
     ansys=Dict(
