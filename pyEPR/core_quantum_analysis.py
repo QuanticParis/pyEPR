@@ -447,7 +447,7 @@ class QuantumAnalysis(object):
         --------------------
             variations : None returns all_variations otherwis this is a list with number
                          as strings ['0', '1']
-            nalyze_previous :set to true if you wish to overwrite previous analysis
+            analyze_previous :set to true if you wish to overwrite previous analysis
         '''
 
         result = OrderedDict()
