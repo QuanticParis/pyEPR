@@ -599,6 +599,43 @@ class DistributedAnalysis(object):
 
     def calc_energy_magnetic(self,
                              variation=None,
+                             mode = None,
+                             volume ='AllObjects',
+                             smooth=True, saved=False):
+        
+        
+        '''
+        See calc_energy_electric.
+
+        Args:
+            variation (str): A string identifier of the variation,
+                such as '0', '1', ...
+            volume (string | 'AllObjects'): Name of the volume to integrate over
+            smooth (bool | False) : Smooth the electric field or not when performing calculation
+        '''
+
+        if not saved:
+            calcobject = CalcObject([], self.setup)
+    
+            vecH = calcobject.getQty("H")
+            if smooth:
+                vecH = vecH.smooth()
+            A = vecH.times_mu()
+            B = vecH.conj()
+            A = A.dot(B)
+            A = A.real()
+            A = A.integrate_vol(name=volume)
+    
+            lv = self._get_lv(variation)
+            return A.evaluate(lv=lv)
+        if saved:
+            energies=np.load()
+            
+            
+    
+    
+    def save_calc_energy_magnetic(self,
+                             variation=None,
                              volume='AllObjects',
                              smooth=False):
         '''
