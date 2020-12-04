@@ -1691,6 +1691,78 @@ class Optimetrics(COMWrapper):
         """
         return self._optimetrics.SolveSetup(setup_name)
 
+    def import_setup(self,parametric_name,array_path, savefields=True, CopyMesh=False,calc_enable=True):
+        self._optimetrics.ImportSetup("OptiParametric", 
+	[
+		"NAME:"+parametric_name, 
+		array_path
+	])
+            
+        self._optimetrics.EditSetup(parametric_name, 
+        	[
+        		"NAME:"+ parametric_name,
+        		"IsEnabled:="		, True,
+        		[
+        			"NAME:ProdOptiSetupDataV2",
+        			"SaveFields:="		, savefields,
+        			"CopyMesh:="		, CopyMesh
+        		]
+        	])
+            
+        self._optimetrics.EditSetup(parametric_name, 
+        	[
+        		"NAME:"+ parametric_name,
+        		"IsEnabled:="		, True,
+        		[
+        			"NAME:ProdOptiSetupDataV2",
+        			"SaveFields:="		, savefields,
+        			"CopyMesh:="		, CopyMesh
+        		]
+        	])
+            
+        if calc_enable:
+ 
+            self._optimetrics.EditSetup(parametric_name, 
+    	[
+                		"NAME:"+ parametric_name,
+    		"IsEnabled:="		, True,
+    		
+    		[
+    			"NAME:Goals",
+    			[
+    				"NAME:Goal",
+    				"ReportType:="		, "Fields",
+    				"Solution:="		, "Setup1 : LastAdaptive",
+    				[
+    					"NAME:SimValueContext"
+    				],
+    				"Calculation:="		, "calc_energy_electric",
+    				"Name:="		, "calc_energy_electric",
+    				[
+    					"NAME:Ranges",
+    					"Range:="		, [						"Var:="			, "Phase",						"Type:="		, "d",						"DiscreteValues:="	, "0deg"]
+    				]
+    			],
+    			[
+    				"NAME:Goal",
+    				"ReportType:="		, "Fields",
+    				"Solution:="		, "Setup1 : LastAdaptive",
+    				[
+    					"NAME:SimValueContext"
+    				],
+    				"Calculation:="		, "calc_energy_magnetic",
+    				"Name:="		, "calc_energy_magnetic",
+    				[
+    					"NAME:Ranges",
+    					"Range:="		, [						"Var:="			, "Phase",						"Type:="		, "d",						"DiscreteValues:="	, "0deg"]
+    				]
+    			]
+    		]
+    	])
+            
+            
+       
+        
     def create_setup(self, variable, swp_params, name="ParametricSetup1", swp_type='linear_step',
                      setup_name=None,
                      save_fields=True, copy_mesh=True, solve_with_copied_mesh_only=True,
