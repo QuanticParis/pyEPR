@@ -19,11 +19,11 @@ project_info = ProjectInfo(r'C:\HFSS_simu\\',
 # 2a. Junctions. Specify junctions in HFSS model
 project_info.junctions['jtransmon'] = {'Lj_variable':'Jinduc', 'rect':'qubit_junction', 'line': 'qubit_junction_line', 'length':5e-6}
 #
-
+#
 project_info.ports['Waste'] = {'rect':'WasP_connector_ohm', 'R': 50, 'line': 'WasP_connector_line'}
 project_info.ports['Buffer'] = {'rect':'BufP_connector_ohm', 'R': 50,  'line': 'BufP_connector_line'}
 project_info.ports['Qubit'] = {'rect':'qubit_connector_ohm', 'R': 50, 'line': 'qubit_connector_line'}
-project_info.ports['Flux'] = {'rect':'BufR_squid_loop_lumped', 'R': 50, 'line': 'BufR_squid_connector_line'}
+project_info.ports['Flux'] = {'rect':'BufR_squid_connector_ohm', 'R': 50, 'line': 'BufR_squid_connector_line'}
 
 
 
@@ -39,4 +39,3 @@ epr_hfss.do_EPR_analysis()
 epr      = QuantumAnalysis(epr_hfss.data_filename)
 epr.analyze_all_variations(cos_trunc = 5, fock_trunc = 4)
 epr.plot_hamiltonian_results()
-
