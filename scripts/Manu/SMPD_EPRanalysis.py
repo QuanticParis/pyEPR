@@ -9,8 +9,8 @@ from pyEPR import *
 
 # 1.  Project and design. Open link to HFSS controls.
 project_info = ProjectInfo(r'C:\HFSS_simu\\',
-			     project_name = 'SMPD', # Project file name (string). "None" will get the current active one.
-			     design_name  = 'fullcircuit_final'       # Design name (string). "None" will get the current active one.
+			     project_name = 'SMPD2', # Project file name (string). "None" will get the current active one.
+			     design_name  = 'SMPD'       # Design name (string). "None" will get the current active one.
 			    )
 
 
@@ -28,8 +28,8 @@ project_info.ports['Flux'] = {'rect':'BufR_squid_loop_lumped', 'R': 50, 'line': 
 
 
 ## 2b. Dissipative elements.
-project_info.dissipative['dielectrics_bulk']    = ['silicon_substrate']    # supply names here, there are more options in project_info.dissipative.
-project_info.dissipative['dielectric_surfaces'] = ['silicon_surface']
+#project_info.dissipative['dielectrics_bulk']    = ['sapphire_mK']    # supply names here, there are more options in project_info.dissipative.
+#project_info.dissipative['dielectric_surfaces'] = ['silicon_surface']
 
 # 3.  Run analysis
 epr_hfss = DistributedAnalysis(project_info)

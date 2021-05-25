@@ -1695,11 +1695,11 @@ class Optimetrics(COMWrapper):
 
         self._optimetrics.ExportOptimetricsResult(setup_names[-1], fn,False)
         data = np.genfromtxt(fn, dtype='str',delimiter=',')[1:]
-        print(len(data[1:]))
-        print(data[:,-2:].astype(np.float))
-        energies=data[:,-2:].astype(np.float)
+#        print(len(data[1:]))
+#        print(data[:,-2:].astype(np.float))
+#        energies=data[:,-2:].astype(np.float)
         
-        return energies
+        return data
 
 
 
@@ -1738,7 +1738,7 @@ class Optimetrics(COMWrapper):
 
 
         
-    def import_setup(self,parametric_name,array_path, savefields=True, CopyMesh=False,calc_enable=True):
+    def import_setup(self,parametric_name,array_path, savefields=True, CopyMesh=False,calc_list=None):
         self._optimetrics.ImportSetup("OptiParametric", 
 	[
 		"NAME:"+parametric_name, 
@@ -1756,55 +1756,47 @@ class Optimetrics(COMWrapper):
         		]
         	])
             
-        self._optimetrics.EditSetup(parametric_name, 
-        	[
-        		"NAME:"+ parametric_name,
-        		"IsEnabled:="		, True,
-        		[
-        			"NAME:ProdOptiSetupDataV2",
-        			"SaveFields:="		, savefields,
-        			"CopyMesh:="		, CopyMesh
-        		]
-        	])
+#        self._optimetrics.EditSetup(parametric_name, 
+#        	[
+#        		"NAME:"+ parametric_name,
+#        		"IsEnabled:="		, True,
+#        		[
+#        			"NAME:ProdOptiSetupDataV2",
+#        			"SaveFields:="		, savefields,
+#        			"CopyMesh:="		, CopyMesh
+#        		]
+#        	])
             
-        if calc_enable:
+        if calc_list is not None:
  
-            self._optimetrics.EditSetup(parametric_name, 
-    	[
-                		"NAME:"+ parametric_name,
-    		"IsEnabled:="		, True,
-    		
-    		[
-    			"NAME:Goals",
-    			[
+            calc_list_formating=["NAME:Goals"]
+            for calc in calc_list:
+                calc_list_formating.append(
+                [
     				"NAME:Goal",
     				"ReportType:="		, "Fields",
     				"Solution:="		, "Setup1 : LastAdaptive",
     				[
     					"NAME:SimValueContext"
     				],
-    				"Calculation:="		, "calc_energy_electric",
-    				"Name:="		, "calc_energy_electric",
-    				[
-    					"NAME:Ranges",
-    					"Range:="		, [						"Var:="			, "Phase",						"Type:="		, "d",						"DiscreteValues:="	, "0deg"]
-    				]
-    			],
-    			[
-    				"NAME:Goal",
-    				"ReportType:="		, "Fields",
-    				"Solution:="		, "Setup1 : LastAdaptive",
-    				[
-    					"NAME:SimValueContext"
-    				],
-    				"Calculation:="		, "calc_energy_magnetic",
-    				"Name:="		, "calc_energy_magnetic",
+    				"Calculation:="		, calc,
+    				"Name:="		, calc,
     				[
     					"NAME:Ranges",
     					"Range:="		, [						"Var:="			, "Phase",						"Type:="		, "d",						"DiscreteValues:="	, "0deg"]
     				]
     			]
-    		]
+                )
+            
+            
+            self._optimetrics.EditSetup(parametric_name, 
+    	[
+                		"NAME:"+ parametric_name,
+    		"IsEnabled:="		, True,
+    		
+    		
+    			calc_list_formating
+    		
     	])
             
             

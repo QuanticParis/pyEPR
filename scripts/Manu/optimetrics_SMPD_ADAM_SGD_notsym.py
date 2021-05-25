@@ -25,7 +25,7 @@ def timestamp_name(name):
 ################# 1.  Project and design. Open link to HFSS controls.
 project_info = ProjectInfo(r'C:\HFSS_simu\\',
 			     project_name = 'SMPD2', # Project file name (string). "None" will get the current active one.
-			     design_name  = 'SMPD'       # Design name (string). "None" will get the current active one.
+			     design_name  = 'SMPD_ultramesh'       # Design name (string). "None" will get the current active one.
 			    )
 
 
@@ -90,7 +90,7 @@ def loss_f_and_g(x0):
     epsilon=bounds_span/30*(2*np.random.randint(2,size=len(x0))-1)
     x_grad=x0+epsilon
     
-    x=np.array([x0]*(len(x0)+1))
+    x=np.arrayfile:///C:/GitHub/Quantrolib/drawings/manu/Design_Nb_SingleSpin.py([x0]*(len(x0)+1))
     
     for i in range(len(x0)):
         ##### check if the gradient positions are within the bounds, otherwize we take the oposite direction

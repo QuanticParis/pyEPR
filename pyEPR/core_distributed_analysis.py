@@ -615,22 +615,20 @@ class DistributedAnalysis(object):
             smooth (bool | False) : Smooth the electric field or not when performing calculation
         '''
 
-        if not saved:
-            calcobject = CalcObject([], self.setup)
-    
-            vecH = calcobject.getQty("H")
-            if smooth:
-                vecH = vecH.smooth()
-            A = vecH.times_mu()
-            B = vecH.conj()
-            A = A.dot(B)
-            A = A.real()
-            A = A.integrate_vol(name=volume)
-    
-            lv = self._get_lv(variation)
-            return A.evaluate(lv=lv)
-        if saved:
-            energies=np.load()
+        calcobject = CalcObject([], self.setup)
+
+        vecH = calcobject.getQty("H")
+        if smooth:
+            vecH = vecH.smooth()
+        A = vecH.times_mu()
+        B = vecH.conj()
+        A = A.dot(B)
+        A = A.real()
+        A = A.integrate_vol(name=volume)
+
+        lv = self._get_lv(variation)
+        return A.evaluate(lv=lv)
+
             
             
     
@@ -660,6 +658,7 @@ class DistributedAnalysis(object):
         A = A.real()
         A = A.integrate_vol(name=volume)
         A.save_as("calc_energy_magnetic")
+        return "calc_energy_magnetic"
         
     def save_calc_energy_electric(self,
                              variation=None,
@@ -703,8 +702,49 @@ class DistributedAnalysis(object):
         A = A.integrate_vol(name=volume)
 
         A.save_as("calc_energy_electric")
+        return "calc_energy_electric"
 
 
+    def save_avg_current_J_surf_mag(self,  junc_rect: str, uj, lj):
+        ''' Peak current I_max for mdoe J in junction J
+            The avg. is over the surface of the junction. I.e., spatial.
+        Args:
+            variation (str): A string identifier of the variation,
+                such as '0', '1', ...
+            junc_rect (str) : name of rectangle to integrate over
+            junc_line (str) : name of junction line to integrate over
+        Returns:
+            Value of peak current
+        '''
+
+        uj = ConstantVecCalcObject(uj, self.setup)
+        calc = CalcObject([], self.setup)
+        #calc = calc.getQty("Jsurf").mag().integrate_surf(name = junc_rect)
+        calc = (((((calc.getQty("Jsurf")).dot(uj)).imag()
+                ).integrate_surf(name=junc_rect)))
+        calc = calc.__div__(lj)
+        calc.save_as("calc_energy_J_surf"+junc_rect)
+        return "calc_energy_J_surf"+junc_rect
+        
+        
+        
+    def save_surf_loss(self, surf):
+        ''' Power dissipated in a lossy surface (e.g. lumped R).
+            Integrate the SurfaceLossDensity over the surface.
+            SurfaceLossDensity is an HFSS short hand for 
+            the real part of the Pyonting vector.
+        Args:
+            variation (str): A string identifier of the variation,
+                such as '0', '1', ...
+            surf (str) : name of the surface to integrate over.
+        Returns:
+            Value of the dissipated power.
+        '''
+
+        calc = CalcObject([], self.setup)
+        calc = (calc.getQty("SurfaceLossDensity")).integrate_surf(name=surf)
+        calc.save_as("calc_energy_J_surf"+surf)
+        return "calc_energy_J_surf"+surf
 
     def calc_p_electric_volume(self,
                                name_dielectric3D,
